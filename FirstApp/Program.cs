@@ -13,6 +13,7 @@ WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseHttpLogging();
+    // remember: middleware is executed in the order added!
 }
 
 app.MapGet("/", () => "Hello World!");
