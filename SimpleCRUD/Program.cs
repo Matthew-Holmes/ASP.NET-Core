@@ -14,19 +14,20 @@ if (!app.Environment.IsDevelopment())
 
 app.UseStatusCodePages();
 
-app.MapGet("/", void () => throw new Exception());
-//app.MapGet("/", () => "Welcome to fruit world!");
+//app.MapGet("/", void () => throw new Exception());
+app.MapGet("/", () => "Welcome to fruit world!");
 
 var _fruit = new ConcurrentDictionary<string, Fruit>(); // for API thread safety
-_fruit["1"] = new Fruit("mango", 7);
-_fruit["2"] = new Fruit("pear", 12);
+_fruit["f1"] = new Fruit("mango", 7);
+_fruit["f2"] = new Fruit("pear", 12);
 
 app.MapGet("/fruit", () => _fruit);
 
 app.MapGet("/fruit/{id}", (string id) =>
     _fruit.TryGetValue(id, out Fruit? fruit)
           ? TypedResults.Ok(fruit) /* 200 */
-          : Results.Problem(statusCode: 404));
+          : Results.Problem(statusCode: 404))
+    .AddEndpointFilter(ValidationHelper.ValidateID);
 
 // not idempotent therefore second call can complain
 app.MapPost("/fruit/{id}", (string id, Fruit fruit) =>
@@ -59,6 +60,25 @@ app.MapGet("/teapot", (HttpResponse response) =>
 });
 
 app.Run();
+
+class ValidationHelper
+{
+    internal static async ValueTask<object?> ValidateID(
+        EndpointFilterInvocationContext context,
+        EndpointFilterDelegate next)
+    {
+        var id = context.GetArgument<string>(0);
+        if (string.IsNullOrEmpty(id) || !id.StartsWith('f'))
+        {
+            return Results.ValidationProblem(
+                new Dictionary<string, string[]>
+                {
+                    {"id", new[]{"invalid format, id must start with 'f'"}}
+                });
+        }
+        return await next(context);
+    }
+}
 
 record Fruit(string Name, int Stock)
 {
