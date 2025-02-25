@@ -18,16 +18,18 @@ app.UseStatusCodePages();
 app.MapGet("/", () => "Welcome to fruit world!");
 
 var _fruit = new ConcurrentDictionary<string, Fruit>(); // for API thread safety
+
+RouteGroupBuilder fruitApi = app.MapGroup("/fruit");
+
 _fruit["f1"] = new Fruit("mango", 7);
 _fruit["f2"] = new Fruit("pear", 12);
 
-app.MapGet("/fruit", () => _fruit);
+fruitApi.MapGet("/", () => _fruit);
 
-app.MapGet("/fruit/{id}", (string id) =>
-    _fruit.TryGetValue(id, out Fruit? fruit)
-          ? TypedResults.Ok(fruit) /* 200 */
-          : Results.Problem(statusCode: 404))
-    .AddEndpointFilterFactory(ValidationHelper.ValidateIdFactory) /* warning - can short-circut and omit logging! */
+// validation
+
+RouteGroupBuilder fruitApiWithValidation = fruitApi.MapGroup("/")
+    .AddEndpointFilterFactory(ValidationHelper.ValidateIdFactory)
     .AddEndpointFilter(async (context, next) =>
     {
         app.Logger.LogInformation("Executing filter...");
@@ -36,8 +38,14 @@ app.MapGet("/fruit/{id}", (string id) =>
         return result;
     });
 
+
+fruitApiWithValidation.MapGet("/{id}", (string id) =>
+    _fruit.TryGetValue(id, out Fruit? fruit)
+          ? TypedResults.Ok(fruit) /* 200 */
+          : Results.Problem(statusCode: 404));
+
 // not idempotent therefore second call can complain
-app.MapPost("/fruit/{id}", (string id, Fruit fruit) =>
+fruitApiWithValidation.MapPost("/{id}", (string id, Fruit fruit) =>
     _fruit.TryAdd(id, fruit)
           ? TypedResults.Created($"/fruit/{id}", fruit) /* 201 */
           : Results.ValidationProblem(new Dictionary<string, string[]>
@@ -46,13 +54,13 @@ app.MapPost("/fruit/{id}", (string id, Fruit fruit) =>
             }));
 
 
-app.MapPut("/fruit/{id}", (string id, Fruit fruit) =>
+fruitApiWithValidation.MapPut("/{id}", (string id, Fruit fruit) =>
 {
     _fruit[id] = fruit;
     return Results.NoContent(); /* 204 */
 });
 
-app.MapDelete("/fruit/{id}", (string id) =>
+fruitApiWithValidation.MapDelete("{id}", (string id) =>
 {
     _fruit.TryRemove(id, out _);
     return Results.NoContent(); /* 204 */
