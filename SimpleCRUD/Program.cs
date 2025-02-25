@@ -105,6 +105,19 @@ class ValidationHelper
     }
 }
 
+//// implement this interface to get intelligsense to get the correct function signature
+//class IdValidationFilter : IEndpointFilter
+//{
+//    // I had to make this async though!
+//    public async ValueTask<object?> InvokeAsync(
+//        EndpointFilterInvocationContext context,
+//        EndpointFilterDelegate next)
+//    {
+//        throw new NotImplementedException();
+//    }
+//}
+
+
 record Fruit(string Name, int Stock)
 {
     public static readonly Dictionary<string, Fruit> All = new();
