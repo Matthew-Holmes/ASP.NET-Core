@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Collections.Concurrent;
+using System.Net.Mime;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -33,6 +35,14 @@ app.MapDelete("/fruit/{id}", (string id) =>
 {
     _fruit.TryRemove(id, out _);
     return Results.NoContent(); /* 204 */
+});
+
+// fine grained status code control
+app.MapGet("/teapot", (HttpResponse response) =>
+{
+    response.StatusCode = 418;
+    response.ContentType = MediaTypeNames.Text.Plain;
+    return response.WriteAsync("I'm a teapot!");
 });
 
 app.Run();
