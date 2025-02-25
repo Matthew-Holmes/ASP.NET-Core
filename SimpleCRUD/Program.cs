@@ -27,7 +27,14 @@ app.MapGet("/fruit/{id}", (string id) =>
     _fruit.TryGetValue(id, out Fruit? fruit)
           ? TypedResults.Ok(fruit) /* 200 */
           : Results.Problem(statusCode: 404))
-    .AddEndpointFilter(ValidationHelper.ValidateID);
+    .AddEndpointFilter(ValidationHelper.ValidateID) /* warning - can short-circut and omit logging! */
+    .AddEndpointFilter(async (context, next) =>
+    {
+        app.Logger.LogInformation("Executing filter...");
+        object? result = await next(context);
+        app.Logger.LogInformation($"Handler results: {result}");
+        return result;
+    });
 
 // not idempotent therefore second call can complain
 app.MapPost("/fruit/{id}", (string id, Fruit fruit) =>
