@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Collections.Concurrent;
 using System.Net.Mime;
+using System.Reflection;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProblemDetails(); // adds the IProblemDetails implementation
@@ -27,7 +27,7 @@ app.MapGet("/fruit/{id}", (string id) =>
     _fruit.TryGetValue(id, out Fruit? fruit)
           ? TypedResults.Ok(fruit) /* 200 */
           : Results.Problem(statusCode: 404))
-    .AddEndpointFilter(ValidationHelper.ValidateID) /* warning - can short-circut and omit logging! */
+    .AddEndpointFilterFactory(ValidationHelper.ValidateIdFactory) /* warning - can short-circut and omit logging! */
     .AddEndpointFilter(async (context, next) =>
     {
         app.Logger.LogInformation("Executing filter...");
@@ -70,20 +70,38 @@ app.Run();
 
 class ValidationHelper
 {
-    internal static async ValueTask<object?> ValidateID(
-        EndpointFilterInvocationContext context,
+    internal static EndpointFilterDelegate ValidateIdFactory(
+        EndpointFilterFactoryContext context,
         EndpointFilterDelegate next)
     {
-        var id = context.GetArgument<string>(0);
-        if (string.IsNullOrEmpty(id) || !id.StartsWith('f'))
+        ParameterInfo[] parameters =
+            context.MethodInfo.GetParameters();
+        int? idPosition = null;
+        for (int i = 0; i < parameters.Length; i++)
         {
-            return Results.ValidationProblem(
-                new Dictionary<string, string[]>
-                {
-                    {"id", new[]{"invalid format, id must start with 'f'"}}
-                });
+            if (parameters[i].Name == "id" &&
+                parameters[i].ParameterType == typeof(string))
+            {
+                idPosition = i;
+                break;
+            }
         }
-        return await next(context);
+        if (!idPosition.HasValue)
+        {
+            return next; /* no filter, but continue pipeline*/
+        }
+        return async (invocationContext) =>
+        {
+            var id = invocationContext
+                .GetArgument<string>(idPosition.Value);
+            if (string.IsNullOrEmpty(id) || !id.StartsWith('f'))
+            {
+                return Results.ValidationProblem(
+                    new Dictionary<string, string[]>
+                    { {"id", new [] {"id must start with 'f'"}}});
+            }
+            return await next(invocationContext);
+        };
     }
 }
 
