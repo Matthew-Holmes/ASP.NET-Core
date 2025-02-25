@@ -2,10 +2,18 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Collections.Concurrent;
 using System.Net.Mime;
 
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.Services.AddProblemDetails(); // adds the IProblemDetails implementation
 
-app.MapGet("/", () => "Welcome to fruit world!");
+WebApplication app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler(); // no path, so uses IProblemDetailsService
+}
+
+app.MapGet("/", void () => throw new Exception());
+//app.MapGet("/", () => "Welcome to fruit world!");
 
 var _fruit = new ConcurrentDictionary<string, Fruit>(); // for API thread safety
 _fruit["1"] = new Fruit("mango", 7);
