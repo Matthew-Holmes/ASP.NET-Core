@@ -16,14 +16,17 @@ app.MapGet("/fruit", () => _fruit);
 app.MapGet("/fruit/{id}", (string id) =>
     _fruit.TryGetValue(id, out Fruit? fruit)
           ? TypedResults.Ok(fruit) /* 200 */
-          : Results.NotFound()     /* 404 */);
+          : Results.Problem(statusCode: 404));
 
 // not idempotent therefore second call can complain
 app.MapPost("/fruit/{id}", (string id, Fruit fruit) =>
     _fruit.TryAdd(id, fruit)
           ? TypedResults.Created($"/fruit/{id}", fruit) /* 201 */
-          : Results.BadRequest(new                      /* 400 */
-                { id = "a fruit with this id already exists" }));
+          : Results.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "id", new [] { "a fruit with this id already exists"} }
+            }));
+
 
 app.MapPut("/fruit/{id}", (string id, Fruit fruit) =>
 {
