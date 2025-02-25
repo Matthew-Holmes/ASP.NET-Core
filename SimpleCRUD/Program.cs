@@ -113,7 +113,7 @@ class ValidationHelper
     }
 }
 
-//// implement this interface to get intelligsense to get the correct function signature
+//// implement this interface to get intellisense to get the correct function signature
 //class IdValidationFilter : IEndpointFilter
 //{
 //    // I had to make this async though!
