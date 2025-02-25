@@ -12,6 +12,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler(); // no path, so uses IProblemDetailsService
 }
 
+app.UseStatusCodePages();
+
 app.MapGet("/", void () => throw new Exception());
 //app.MapGet("/", () => "Welcome to fruit world!");
 
