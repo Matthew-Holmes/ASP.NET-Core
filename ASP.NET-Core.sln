@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCRUD", "SimpleCRUD\Si
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndpointRouting", "EndpointRouting\EndpointRouting.csproj", "{8259BDEB-962C-492D-9C0B-43E5454B4A2E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelBinding", "ModelBinding\ModelBinding.csproj", "{0E3C167C-5325-4D52-938D-91BA8F9C4EF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{8259BDEB-962C-492D-9C0B-43E5454B4A2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8259BDEB-962C-492D-9C0B-43E5454B4A2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8259BDEB-962C-492D-9C0B-43E5454B4A2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E3C167C-5325-4D52-938D-91BA8F9C4EF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E3C167C-5325-4D52-938D-91BA8F9C4EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E3C167C-5325-4D52-938D-91BA8F9C4EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E3C167C-5325-4D52-938D-91BA8F9C4EF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
