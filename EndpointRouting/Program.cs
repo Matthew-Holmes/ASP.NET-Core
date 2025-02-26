@@ -1,4 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<RouteOptions>(o =>
+{
+    o.LowercaseUrls = true;
+    o.AppendTrailingSlash = true;
+    o.LowercaseQueryStrings = false;
+});
+
 
 builder.Services.AddHealthChecks();
 builder.Services.AddRazorPages();
@@ -7,19 +14,19 @@ var app = builder.Build();
 
 
 app.MapGet("/", () => "Hello World!").WithName("hello"); // minimal API endpoint
-app.MapHealthChecks("/healthz");                         // register a health-check endpoint 
+app.MapHealthChecks("/healthz").WithName("healthcheck"); // register a health-check endpoint 
 app.MapRazorPages();                                     // register all razor pages as endpoints
 
 // link generator (note endpoint name metadata ARE case sensitive)
-app.MapGet("/product/{name}", (string name) => $"the product is {name}")
+app.MapGet("/product/{name}/", (string name) => $"the product is {name}")
         .WithName("product"); // metadata
 
 app.MapGet("/links", (LinkGenerator links) =>
+new []
 {
-    /* creates a lik using the route name */
-    string link = links.GetPathByName("product",
-        new { name = "big-widget" });
-    return $"view the product at {link}";
+    links.GetPathByName("healthcheck"),
+    links.GetPathByName("product",
+        new { name = "big-widget", Q = "Test"}),
 });
 
 // redirects
