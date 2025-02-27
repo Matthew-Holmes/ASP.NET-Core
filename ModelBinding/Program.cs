@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -20,6 +22,8 @@ app.MapPost("/upload", (IFormFile file) => $"recieved file of size {file.Length}
 
 app.MapGet("/category/{id}",
     ([AsParameters] SearchModel model) => $"recieved {model}");
+
+app.MapPost("/users", (UserModel user) => user.ToString());
 
 app.Run();
 
@@ -66,4 +70,27 @@ record struct SearchModel(
     int page,
     [FromHeader(Name = "sort")] bool?  sortAsc,
     [FromQuery(Name = "q")]     string search);
+
+// DataAnnotations
+public record UserModel
+{
+    [Required]
+    [StringLength(100)]
+    [Display(Name = "Your name")]
+    public string FirstName { get; set; }
+
+    [Required]
+    [StringLength(100)]
+    [Display(Name = "Last name")]
+    public string LastName { get; set; }
+
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
+
+    [Phone]
+    [Display(Name = "Phone number")]
+    public string PhoneNumber { get; set; }
+}
+
 
