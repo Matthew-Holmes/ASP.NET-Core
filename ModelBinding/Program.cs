@@ -18,6 +18,9 @@ app.MapPost("/size", (SizeDetails size) => $"recieved {size}");
 app.MapPost("/upload", (IFormFile file) => $"recieved file of size {file.Length}")
     .DisableAntiforgery(); // don't do this
 
+app.MapGet("/category/{id}",
+    ([AsParameters] SearchModel model) => $"recieved {model}");
+
 app.Run();
 
 readonly record struct ProductId(int id)
@@ -57,4 +60,10 @@ public record SizeDetails(double height, double width)
     }
 }
 
+// AsParameters binding
+record struct SearchModel(
+    int id,
+    int page,
+    [FromHeader(Name = "sort")] bool?  sortAsc,
+    [FromQuery(Name = "q")]     string search);
 
