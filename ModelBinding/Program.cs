@@ -13,6 +13,10 @@ app.MapGet("/paged-products/{id}/paged",
 
 app.MapGet("/product/{id}", (ProductId id) => $"recieved {id}");
 
+// warning - never run any files uploaded!
+app.MapPost("/upload", (IFormFile file) => $"recieved file of size {file.Length}")
+    .DisableAntiforgery(); // don't do this
+
 app.Run();
 
 readonly record struct ProductId(int id)
