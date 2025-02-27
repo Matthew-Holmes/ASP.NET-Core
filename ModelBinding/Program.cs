@@ -11,4 +11,25 @@ app.MapGet("/paged-products/{id}/paged",
      [FromHeader(Name = "PageSize")] int pageSize)
     => $"received id {id}, page {page}, pageSize {pageSize}");
 
+app.MapGet("/product/{id}", (ProductId id) => $"recieved {id}");
+
 app.Run();
+
+readonly record struct ProductId(int id)
+{
+    public static bool TryParse(string? s, out ProductId result)
+    {
+        if (s is not null
+            && s.StartsWith('p')
+            /* efficiently slice by treating the string as a ReadOnlySpan */
+            && int.TryParse(s.AsSpan().Slice(1), out int id))
+        {
+            result = new ProductId(id);
+            return true;
+        }
+        result = default;
+        return false;
+    }
+
+}
+
