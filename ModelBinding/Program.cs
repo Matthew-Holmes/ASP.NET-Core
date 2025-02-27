@@ -25,6 +25,26 @@ app.MapGet("/category/{id}",
 
 app.MapPost("/users", (UserModel user) => user.ToString()).WithParameterValidation();
 
+app.MapPost("/complex-users", (CreateUserModel user) =>
+{
+    var validationResults = new List<ValidationResult>();
+    var validationContext = new ValidationContext(user);
+
+    // Manually validate IValidatableObject logic
+    bool isValid = Validator.TryValidateObject(user, validationContext, validationResults, true);
+
+    if (!isValid)
+    {
+        return Results.ValidationProblem(validationResults.ToDictionary(
+            v => v.MemberNames.FirstOrDefault() ?? string.Empty,
+            v => new[] { v.ErrorMessage }
+        ));
+    }
+
+    return Results.Ok(new { message = "User data is valid", data = user });
+
+}).WithParameterValidation(); // Still keeps DataAnnotations validation
+
 app.Run();
 
 readonly record struct ProductId(int id)
@@ -93,4 +113,24 @@ public record UserModel
     public string PhoneNumber { get; set; }
 }
 
+public record CreateUserModel : IValidatableObject
+{
+    [EmailAddress]
+    public string Email { get; set; }
+
+    [Phone]
+    public string PhoneNumber { get; set; }
+
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (string.IsNullOrEmpty(Email)
+         && string.IsNullOrEmpty(PhoneNumber))
+        {
+            yield return new ValidationResult(
+                "you must provide an Email or a PhoneNumber",
+                new[] { nameof(Email), nameof(PhoneNumber) });
+        }
+    }
+}
 
