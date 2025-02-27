@@ -23,7 +23,7 @@ app.MapPost("/upload", (IFormFile file) => $"recieved file of size {file.Length}
 app.MapGet("/category/{id}",
     ([AsParameters] SearchModel model) => $"recieved {model}");
 
-app.MapPost("/users", (UserModel user) => user.ToString());
+app.MapPost("/users", (UserModel user) => user.ToString()).WithParameterValidation();
 
 app.Run();
 
