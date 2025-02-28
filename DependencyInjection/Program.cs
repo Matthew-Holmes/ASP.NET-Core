@@ -1,17 +1,54 @@
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// extracted adding multiple services to a utility method
 builder.Services.AddEmailSender();
 
+// scoping demo
+builder.Services.AddTransient<DataContext>();
+builder.Services.AddTransient<Repository>();
+builder.Services.AddSingleton(
+    new ConcurrentQueue<string>()); // quick hack, should be a IHistoryService or something
+
 var app = builder.Build();
+
 app.MapGet("/", () => "Hello World!");
 app.MapGet("/register/{username}", RegisterUser);
+app.MapGet("/scoping", RowCounts);
 
 app.Run();
 
+static string RowCounts(
+    DataContext db,
+    Repository repository,
+    ConcurrentQueue<string> previous)
+{
+    int dbCount = db.RowCount;
+    int repositoryCount = repository.RowCount;
 
+    string ret = $"DataContext: {dbCount}, Repository: {repositoryCount}";
+
+    previous.Enqueue(ret);
+
+    StringBuilder message = new StringBuilder(ret);
+    message.AppendLine();
+    message.AppendLine();
+    message.AppendLine("history:");
+
+    foreach (string s in previous)
+    {
+        message.AppendLine(s);
+    }
+
+    return message.ToString();
+}
+
+
+#region DI demo
 string RegisterUser(string username, IEmailSender emailSender)
 {
     emailSender.SendEmail(username);
@@ -74,3 +111,29 @@ public class MessageFactory
 { }
 
 public record EmailServerSettings(string Host, int Port);
+
+#endregion
+
+#region DI scope demo
+
+
+public class Repository
+{
+    private readonly DataContext _dataContext;
+    public Repository(DataContext dataContext)
+    {
+        _dataContext = dataContext;
+    }
+    public int RowCount => _dataContext.RowCount;
+}
+
+
+// models a DataContext on an underlying database
+public class DataContext
+{
+    public int RowCount { get; }
+        = Random.Shared.Next(1, 1_000_000_000);
+}
+
+#endregion
+
