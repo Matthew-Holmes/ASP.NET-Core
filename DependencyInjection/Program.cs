@@ -3,20 +3,7 @@ using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IEmailSender, EmailSender>();
-builder.Services.AddScoped<NetworkClient>();
-builder.Services.AddSingleton<MessageFactory>();
-//builder.Services.AddSingleton(
-//    new EmailServerSettings(
-//            Host: "a.server.com",
-//            Port: 42
-//        ));
-builder.Services.AddScoped(
-    provider =>
-        new EmailServerSettings(
-                Host: "a.server.com",
-                Port: 42
-            ));
+builder.Services.AddEmailSender();
 
 var app = builder.Build();
 app.MapGet("/", () => "Hello World!");
@@ -29,6 +16,31 @@ string RegisterUser(string username, IEmailSender emailSender)
 {
     emailSender.SendEmail(username);
     return $"email sent to {username}";
+}
+
+// create an extension method to tidy up adding multiple, linked, services
+public static class EmailSenderServiceCollectionExtensions
+{
+    // create an extension on the IServiceCollection using `this` keyword
+    public static IServiceCollection AddEmailSender(
+        this IServiceCollection services)
+    {
+        services.AddScoped<IEmailSender, EmailSender>();
+        services.AddScoped<NetworkClient>();
+        services.AddSingleton<MessageFactory>();
+        //builder.Services.AddSingleton(
+        //    new EmailServerSettings(
+        //            Host: "a.server.com",
+        //            Port: 42
+        //        ));
+        services.AddScoped(
+            provider =>
+                new EmailServerSettings(
+                        Host: "a.server.com",
+                        Port: 42
+                    ));
+        return services;
+    }
 }
 
 public interface IEmailSender
