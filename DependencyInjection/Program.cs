@@ -6,11 +6,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<NetworkClient>();
 builder.Services.AddSingleton<MessageFactory>();
-builder.Services.AddSingleton(
-    new EmailServerSettings(
-            Host: "a.server.com",
-            Port: 42
-        ));
+//builder.Services.AddSingleton(
+//    new EmailServerSettings(
+//            Host: "a.server.com",
+//            Port: 42
+//        ));
+builder.Services.AddScoped(
+    provider =>
+        new EmailServerSettings(
+                Host: "a.server.com",
+                Port: 42
+            ));
 
 var app = builder.Build();
 app.MapGet("/", () => "Hello World!");
