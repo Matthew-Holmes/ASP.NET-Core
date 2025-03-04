@@ -8,5 +8,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
 app.MapGet("/config", () => app.Configuration.AsEnumerable());
+// can also access via dependency injection
+app.MapGet("/config/di", (IConfiguration config) => config.AsEnumerable());
 
 app.Run();
