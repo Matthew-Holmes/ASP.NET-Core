@@ -3,6 +3,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.Sources.Clear();
 builder.Configuration.AddJsonFile("appsettings.json", optional: true);
 
+var zoomlevel = builder.Configuration["MapSettings:DefaultZoomLevel"];
+var lat1 = builder.Configuration["MapSettings:DefaultLocation:Latitude"];
+var lat2 = builder.Configuration.GetSection("MapSettings")["DefaultLocation:Latitude"];
+
+
 
 var app = builder.Build();
 
