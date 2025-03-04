@@ -9,8 +9,26 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEmailSender();
 
 // scoping demo
-builder.Services.AddTransient<DataContext>();
-builder.Services.AddTransient<Repository>();
+
+// Transient
+// The row counts returned by the datacontext vs the repo need not be the same
+// even on the same request handling
+//builder.Services.AddTransient<DataContext>();
+//builder.Services.AddTransient<Repository>();
+
+// Scoped
+// The row counts returned by the datacontext vs the repo will be identical
+// on the same request handling, since the datacontext is reused upon Repository
+// construction (since same request = same scope)
+//builder.Services.AddScoped<DataContext>();
+//builder.Services.AddScoped<Repository>();
+
+// Singleton
+// only ever one Datacontext and one Repository, row counts invariant under requests
+// Warning: these must be thread safe operations (hence use concurrent queue)
+builder.Services.AddSingleton<DataContext>();
+builder.Services.AddSingleton<Repository>();
+
 builder.Services.AddSingleton(
     new ConcurrentQueue<string>()); // quick hack, should be a IHistoryService or something
 
