@@ -2,9 +2,19 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+IHostEnvironment env = builder.Environment;
+
 // later additions can overwrite ealier
 builder.Configuration.Sources.Clear();
-builder.Configuration.AddJsonFile("appsettings.json", optional: true);
+
+builder.Configuration
+    .AddJsonFile(
+        "appsettings.json",
+        optional: false) /* make this compulsory */
+    .AddJsonFile(
+        $"appsettings.{env.EnvironmentName}.json",
+        optional: true);
+
 builder.Configuration.AddJsonFile("sharedSettings.json", optional: true);
 builder.Configuration.AddEnvironmentVariables();
 //builder.Configuration.AddEnvironmentVariables("SomePrefix"); // only variables like SomePrefix__MyVar
