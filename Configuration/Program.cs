@@ -9,6 +9,10 @@ builder.Configuration.AddJsonFile("sharedSettings.json", optional: true);
 builder.Configuration.AddEnvironmentVariables();
 //builder.Configuration.AddEnvironmentVariables("SomePrefix"); // only variables like SomePrefix__MyVar
 
+builder.Services.Configure<AppDisplaySettings>(
+    builder.Configuration.GetSection("AppDisplaySettings"));
+
+
 var zoomlevel = builder.Configuration["MapSettings:DefaultZoomLevel"];
 var lat1 = builder.Configuration["MapSettings:DefaultLocation:Latitude"];
 var lat2 = builder.Configuration.GetSection("MapSettings")["DefaultLocation:Latitude"];
