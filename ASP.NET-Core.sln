@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configuration", "Configurat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAPI", "OpenAPI\OpenAPI.csproj", "{298371EB-4352-4CF1-A778-E97996B5E022}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAPI_NSwag", "OpenAPI_NSwag\OpenAPI_NSwag.csproj", "{A7C40EE3-F167-4C56-8273-7F6BCDDC4C90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{298371EB-4352-4CF1-A778-E97996B5E022}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{298371EB-4352-4CF1-A778-E97996B5E022}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{298371EB-4352-4CF1-A778-E97996B5E022}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7C40EE3-F167-4C56-8273-7F6BCDDC4C90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7C40EE3-F167-4C56-8273-7F6BCDDC4C90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7C40EE3-F167-4C56-8273-7F6BCDDC4C90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7C40EE3-F167-4C56-8273-7F6BCDDC4C90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
