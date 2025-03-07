@@ -1,9 +1,12 @@
 ﻿using Fruit;
 
 
-FruitClient fc = new FruitClient(
-    "http://localhost:5000",
-    new HttpClient());
+IFruitClient fc = new FruitClient(
+    new HttpClient()
+    {
+        BaseAddress = new Uri("http://localhost:5000")
+    });
+   
 
 Fruit.Fruit created = await fc.FruitPOSTAsync("123",
     new Fruit.Fruit { Name = "Banana", Stock = 100 });

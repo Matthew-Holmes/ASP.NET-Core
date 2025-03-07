@@ -8,8 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <OpenApiReference Include="OpenAPIs\swagger.json" Namespace="Fruit" ClassName="FruitClient">
-      <SourceUri>https://localhost:7017/swagger/v1/swagger.json</SourceUri>
+    <OpenApiReference Include="OpenAPIs\swagger.json" 
+	  Namespace="Fruit" 
+	  ClassName="FruitClient">
+      <SourceUri>http://localhost:5000/swagger/v1/swagger.json</SourceUri>
+	  <Options>/UseBaseUrl:false /GenerateClientInterfaces:true
+	    /JsonLibrary:SystemTextJson</Options>
     </OpenApiReference>
   </ItemGroup>
 
