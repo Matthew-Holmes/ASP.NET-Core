@@ -29,9 +29,14 @@ app.MapGet("/fruit/{id}", (string id) =>
     _fruit.TryGetValue(id, out var fruit)
         ? TypedResults.Ok(fruit)
         : Results.Problem(statusCode: 404))
+    .WithName("GetFruit") /* this overwrites autogen (FruitGETAsync) */
     .WithTags("fruit") /* creates a tag group in Swagger UI */
     .Produces<Fruit>(/* default is 200 */)
-    .ProducesProblem(404);
+    .ProducesProblem(404)
+    .WithSummary("fetches a fruit")
+    .WithDescription("fetches a fruit by id, or returns 404"
+        + " if no fruit with the id exists")
+    .WithOpenApi();
 
 app.MapPost("/fruit/{id}", (string id, Fruit fruit) =>
     _fruit.TryAdd(id, fruit)
@@ -40,9 +45,14 @@ app.MapPost("/fruit/{id}", (string id, Fruit fruit) =>
         {
             {"id", new[] {"A fruit with this id already exists"} }
         }))
+    .WithName("PostFruit")
     .WithTags("fruit")
     .Produces<Fruit>(201) /* also produces fruit but with 201 response */
-    .ProducesValidationProblem(/* 400 */);
+    .ProducesValidationProblem(/* 400 */)
+    .WithSummary("adds a new fruit")
+    .WithDescription("adds a new fruit by id, or returns 400"
+        + " if a fruit with that id already exists")
+    .WithOpenApi();
 
 
 app.Run();
