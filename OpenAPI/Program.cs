@@ -20,23 +20,17 @@ var _fruit = new ConcurrentDictionary<String, Fruit>();
 _fruit["mango"] = new Fruit("mango", 7);
 _fruit["apple"] = new Fruit("apple", 5);
 
+var handler = new FruitHandler(_fruit);
+
 app.UseSwagger();   // middleware to expose OpenAPI document for the app
 app.UseSwaggerUI(); // middleware that serves Swagger UI
 
 app.MapGet("/", () => "welcome to fruit world");
 
-app.MapGet("/fruit/{id}", (string id) =>
-    _fruit.TryGetValue(id, out var fruit)
-        ? TypedResults.Ok(fruit)
-        : Results.Problem(statusCode: 404))
-    .WithName("GetFruit") /* this overwrites autogen (FruitGETAsync) */
-    .WithTags("fruit") /* creates a tag group in Swagger UI */
-    .Produces<Fruit>(/* default is 200 */)
-    .ProducesProblem(404)
-    .WithSummary("fetches a fruit")
-    .WithDescription("fetches a fruit by id, or returns 404"
-        + " if no fruit with the id exists")
-    .WithOpenApi();
+
+// now most of the metadata is xml comment-annotations in the handler
+app.MapGet("/fruit/{id}", handler.GetFruit)
+    .WithName("GetFruit"); /* still need some metadata here */
 
 app.MapPost("/fruit/{id}", (string id, Fruit fruit) =>
     _fruit.TryAdd(id, fruit)
@@ -58,3 +52,17 @@ app.MapPost("/fruit/{id}", (string id, Fruit fruit) =>
 app.Run();
 
 record Fruit(String Name, int Stock);
+
+internal class FruitHandler
+{
+    private readonly ConcurrentDictionary<string, Fruit> _fruit;
+
+    public FruitHandler(ConcurrentDictionary<string, Fruit> fruit)
+    {
+        _fruit = fruit;
+    }
+
+    public IResult GetFruit(string id) => _fruit.TryGetValue(id, out var fruit)
+        ? TypedResults.Ok(fruit)
+        : Results.Problem(statusCode: 404);
+}
