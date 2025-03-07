@@ -11,13 +11,13 @@
         "tags": [
           "fruit"
         ],
-        "summary": "fetches a fruit",
-        "description": "fetches a fruit by id, or returns 404 if no fruit with the id exists",
+        "summary": "Fetches a fruit by id, or returns 404 if it does not exist",
         "operationId": "GetFruit",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "The id of the fruit to fetch",
             "required": true,
             "schema": {
               "type": "string"
@@ -26,7 +26,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Returns the fruit if it does exist",
             "content": {
               "application/json": {
                 "schema": {
@@ -35,15 +35,18 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "400": {
+            "description": "Bad Request",
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
                 }
               }
             }
+          },
+          "404": {
+            "description": "If the fruit doesn't exist"
           }
         }
       },
@@ -166,33 +169,6 @@
                 "type": "string"
               }
             },
-            "nullable": true
-          }
-        },
-        "additionalProperties": { }
-      },
-      "ProblemDetails": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "nullable": true
-          },
-          "title": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "detail": {
-            "type": "string",
-            "nullable": true
-          },
-          "instance": {
-            "type": "string",
             "nullable": true
           }
         },
