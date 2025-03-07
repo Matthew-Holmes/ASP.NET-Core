@@ -1,17 +1,25 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Collections.Concurrent;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddEndpointsApiExplorer(); // endpoint discovery features in Swashbuckle requires
-builder.Services.AddSwaggerGen(x =>         /* Swashbuckle service required for generating OpenApi documents */
-    x.SwaggerDoc("v1", new OpenApiInfo()
+builder.Services.AddSwaggerGen(opts =>      /* Swashbuckle service required for generating OpenApi documents */
+{
+    // enable xml comments for the OpenAPI descriptions
+    var file = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, file));
+
+    opts.SwaggerDoc("v1", new OpenApiInfo()
     {
-        Title       = "fruitworld",
+        Title = "fruitworld",
         Description = "network mediated human fruit interaction",
-        Version     = "1.0"
-    }));
+        Version = "1.0"
+    });
+});
 
 var app = builder.Build();
 
@@ -62,6 +70,16 @@ internal class FruitHandler
         _fruit = fruit;
     }
 
+
+    /// <summary>
+    /// Fetches a fruit by id, or returns 404 if it does not exist
+    /// </summary>
+    /// <param name="id">The id of the fruit to fetch</param>
+    /// <response code="200">Returns the fruit if it does exist</response>
+    /// <response code="404">If the fruit doesn't exist</response>
+    [ProducesResponseType(typeof(Fruit), 200)]
+    [ProducesResponseType(typeof(HttpValidationProblemDetails), 400, "application/problem+json")] // declare response format
+    [Tags("fruit")]
     public IResult GetFruit(string id) => _fruit.TryGetValue(id, out var fruit)
         ? TypedResults.Ok(fruit)
         : Results.Problem(statusCode: 404);
