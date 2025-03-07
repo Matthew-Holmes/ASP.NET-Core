@@ -6,12 +6,12 @@ IFruitClient fc = new FruitClient(
     {
         BaseAddress = new Uri("http://localhost:5000")
     });
-   
 
-Fruit.Fruit created = await fc.FruitPOSTAsync("123",
+
+Fruit.Fruit created = await fc.PostFruitAsync("123",
     new Fruit.Fruit { Name = "Banana", Stock = 100 });
 Console.WriteLine($"created {created.Name}");
 
-Fruit.Fruit fetched = await fc.FruitGETAsync("123");
+Fruit.Fruit fetched = await fc.GetFruitAsync("123");
 Console.WriteLine($"fetched {fetched.Name}");
 

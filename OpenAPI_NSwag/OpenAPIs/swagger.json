@@ -11,6 +11,9 @@
         "tags": [
           "fruit"
         ],
+        "summary": "fetches a fruit",
+        "description": "fetches a fruit by id, or returns 404 if no fruit with the id exists",
+        "operationId": "GetFruit",
         "parameters": [
           {
             "name": "id",
@@ -48,6 +51,9 @@
         "tags": [
           "fruit"
         ],
+        "summary": "adds a new fruit",
+        "description": "adds a new fruit by id, or returns 400 if a fruit with that id already exists",
+        "operationId": "PostFruit",
         "parameters": [
           {
             "name": "id",
