@@ -1,21 +1,21 @@
 using System.Collections.Concurrent;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 #region demo data
-Ingredient _egg   = new Ingredient(0, "egg",               "eggs");
-Ingredient _flour = new Ingredient(1, "plain white flour", "grams");
-Ingredient _milk  = new Ingredient(2, "whole milk",        "millilitres");
+Ingredient _egg   = new Ingredient("egg",               "eggs");
+Ingredient _flour = new Ingredient("plain white flour", "grams");
+Ingredient _milk  = new Ingredient("whole milk",        "millilitres");
 
 Recipe _pancakes = new Recipe(
-    0,
     "pancakes",
-    new Dictionary<Ingredient, decimal>
+    new List<Tuple<Ingredient, decimal>>
     {
-        { _egg, 2.0m },
-        { _flour, 500.0m },
-        { _milk, 100.0m }
+        Tuple.Create(_egg, 2.0m),
+        Tuple.Create(_flour, 500.0m),
+        Tuple.Create(_milk, 100.0m)
     },
     new List<String> 
     { 
@@ -28,11 +28,10 @@ Recipe _pancakes = new Recipe(
     });
 
 Recipe _boiledEgg = new Recipe(
-    1,
     "hard boiled egg",
-    new Dictionary<Ingredient, decimal>
+    new List<Tuple<Ingredient, decimal>>
     {
-        { _egg, 2.0m },
+        Tuple.Create(_egg, 2.0m)
     },
     new List<string>
     {
@@ -41,29 +40,44 @@ Recipe _boiledEgg = new Recipe(
     });
 #endregion
 
-ConcurrentBag<Ingredient> _ingredients = new ConcurrentBag<Ingredient>
+ConcurrentDictionary<int, Ingredient> _ingredients = new ConcurrentDictionary<int, Ingredient>
 {
-    _egg,
-    _flour,
-    _milk,
+    [0] = _egg,
+    [1] = _flour,
+    [2] = _milk
 };
 
-ConcurrentBag<Recipe> _recipes = new ConcurrentBag<Recipe>
+ConcurrentDictionary<int, Recipe> _recipes = new ConcurrentDictionary<int, Recipe>
 {
-    _boiledEgg,
-    _pancakes,
+    [0] = _boiledEgg,
+    [1] = _pancakes,
 };
 
 
 app.MapGet("/", () => "Welcome to recipe world!");
+app.MapGet("/recipes", () => _recipes);
+app.MapGet("/recipes/{id}", (int id) => _recipes.TryGetValue(id, out var rec) 
+    ? TypedResults.Ok(rec) : Results.NotFound());
+
+app.MapGet("/ingredients/{id}", (int id) => _ingredients.TryGetValue(id, out var ing)
+    ? TypedResults.Ok(ing) : Results.NotFound());
+
+
+// not idempotent
+app.MapPost("/recipes/{id}", (int id, Recipe rec) => _recipes.TryAdd(id, rec)
+    ? TypedResults.Created($"/recipes/{id}", rec) : Results.BadRequest(new
+    { id = " a recipe with this id already exists" }));
+
+// will definitely add or overwrite (thus idempotent)
+app.MapPut("/recipes/{id}", (int id, Recipe rec) =>
+    _recipes.AddOrUpdate(id, (i) => rec, (i, _) => rec));
 
 app.Run();
 
-public record Ingredient(int Id, String Name, String Unit);
+public record Ingredient(String Name, String Unit);
 public record Recipe(
-    int Id,
     String Name,
-    Dictionary<Ingredient, decimal> Ingredients,
+    List<Tuple<Ingredient, decimal>> Ingredients,
     List<String> steps);
 
 
