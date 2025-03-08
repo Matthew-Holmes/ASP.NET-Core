@@ -58,16 +58,21 @@ ConcurrentDictionary<int, Recipe> _recipes = new ConcurrentDictionary<int, Recip
     [1] = _pancakes,
 };
 
-
 app.MapGet("/", () => "Welcome to recipe world!");
 
 app.MapGet("/ingredients/{id}", (int id) => _ingredients.TryGetValue(id, out var ing)
     ? TypedResults.Ok(ing) : Results.NotFound());
 
 RouteGroupBuilder recipeApi = app.MapGroup("/recipe");
-recipeApi.MapGet("/", () => _recipes);
+recipeApi.MapGet("/", () => _recipes)
+    .WithTags("recipe")
+    .Produces<IEnumerable<Recipe>>(StatusCodes.Status200OK);
+
 recipeApi.MapGet("/{id}", (int id) => _recipes.TryGetValue(id, out var rec)
-    ? TypedResults.Ok(rec) : Results.NotFound());
+    ? TypedResults.Ok(rec) : Results.NotFound())
+    .WithTags("recipe")
+    .Produces<Recipe>(StatusCodes.Status200OK)
+    .ProducesProblem(StatusCodes.Status404NotFound);
 
 // not idempotent
 recipeApi.MapPost("/", (Recipe rec) => {
@@ -79,18 +84,27 @@ recipeApi.MapPost("/", (Recipe rec) => {
     if (!_recipes.TryAdd(id, rec))
         return Results.BadRequest(new { message = "Failed to add recipe." });
 
-    return TypedResults.Created($"/recipes/{id}", new { id, recipe = rec });
-});
+    return TypedResults.Created($"/recipes/{id}", new RecipeResponse(id, rec));
+})
+    .WithTags("recipe")
+    .Produces<RecipeResponse>(StatusCodes.Status201Created)
+    .ProducesProblem(StatusCodes.Status400BadRequest);
 
 // will definitely add or overwrite (thus idempotent)
 recipeApi.MapPut("/{id}", (int id, Recipe rec) => {
     var isUpdate = _recipes.ContainsKey(id);
     _recipes[id] = rec;
-    return isUpdate ? Results.Ok(rec) : TypedResults.Created($"/recipes/{id}", rec);
-});
+    return isUpdate ? Results.Ok(rec) : TypedResults.Created($"/recipe/{id}", rec);
+})
+    .WithTags("recipe")
+    .Produces<Recipe>(StatusCodes.Status200OK)
+    .Produces<Recipe>(StatusCodes.Status201Created);
 
 recipeApi.MapDelete("/{id}", (int id) =>
-    _recipes.TryRemove(id, out var _) ? Results.NoContent() : Results.NotFound());
+    _recipes.TryRemove(id, out var _) ? Results.NoContent() : Results.NotFound())
+    .WithTags("recipe")
+    .Produces(StatusCodes.Status204NoContent)
+    .ProducesProblem(StatusCodes.Status404NotFound);
 
 app.Run();
 
@@ -99,6 +113,9 @@ public record Recipe(
     String Name,
     List<Tuple<Ingredient, decimal>> Ingredients,
     List<String> steps);
+
+public record RecipeResponse(int Id, Recipe Recipe);
+
 
 
 
