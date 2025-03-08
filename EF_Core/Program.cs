@@ -64,13 +64,13 @@ app.MapGet("/", () => "Welcome to recipe world!");
 app.MapGet("/ingredients/{id}", (int id) => _ingredients.TryGetValue(id, out var ing)
     ? TypedResults.Ok(ing) : Results.NotFound());
 
-
-app.MapGet("/recipes", () => _recipes);
-app.MapGet("/recipes/{id}", (int id) => _recipes.TryGetValue(id, out var rec)
+RouteGroupBuilder recipeApi = app.MapGroup("/recipe");
+recipeApi.MapGet("/", () => _recipes);
+recipeApi.MapGet("/{id}", (int id) => _recipes.TryGetValue(id, out var rec)
     ? TypedResults.Ok(rec) : Results.NotFound());
 
 // not idempotent
-app.MapPost("/recipes", (Recipe rec) => {
+recipeApi.MapPost("/", (Recipe rec) => {
     if (rec == null)
         return Results.BadRequest(new { message = "Recipe data is required." });
 
@@ -83,13 +83,13 @@ app.MapPost("/recipes", (Recipe rec) => {
 });
 
 // will definitely add or overwrite (thus idempotent)
-app.MapPut("/recipes/{id}", (int id, Recipe rec) => {
+recipeApi.MapPut("/{id}", (int id, Recipe rec) => {
     var isUpdate = _recipes.ContainsKey(id);
     _recipes[id] = rec;
     return isUpdate ? Results.Ok(rec) : TypedResults.Created($"/recipes/{id}", rec);
 });
 
-app.MapDelete("/recipes/{id}", (int id) =>
+recipeApi.MapDelete("/{id}", (int id) =>
     _recipes.TryRemove(id, out var _) ? Results.NoContent() : Results.NotFound());
 
 app.Run();
