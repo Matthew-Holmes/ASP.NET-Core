@@ -60,22 +60,37 @@ ConcurrentDictionary<int, Recipe> _recipes = new ConcurrentDictionary<int, Recip
 
 
 app.MapGet("/", () => "Welcome to recipe world!");
-app.MapGet("/recipes", () => _recipes);
-app.MapGet("/recipes/{id}", (int id) => _recipes.TryGetValue(id, out var rec) 
-    ? TypedResults.Ok(rec) : Results.NotFound());
 
 app.MapGet("/ingredients/{id}", (int id) => _ingredients.TryGetValue(id, out var ing)
     ? TypedResults.Ok(ing) : Results.NotFound());
 
 
+app.MapGet("/recipes", () => _recipes);
+app.MapGet("/recipes/{id}", (int id) => _recipes.TryGetValue(id, out var rec)
+    ? TypedResults.Ok(rec) : Results.NotFound());
+
 // not idempotent
-app.MapPost("/recipes/{id}", (int id, Recipe rec) => _recipes.TryAdd(id, rec)
-    ? TypedResults.Created($"/recipes/{id}", rec) : Results.BadRequest(new
-    { id = " a recipe with this id already exists" }));
+app.MapPost("/recipes", (Recipe rec) => {
+    if (rec == null)
+        return Results.BadRequest(new { message = "Recipe data is required." });
+
+    int id = _recipes.Keys.DefaultIfEmpty(0).Max() + 1;
+
+    if (!_recipes.TryAdd(id, rec))
+        return Results.BadRequest(new { message = "Failed to add recipe." });
+
+    return TypedResults.Created($"/recipes/{id}", new { id, recipe = rec });
+});
 
 // will definitely add or overwrite (thus idempotent)
-app.MapPut("/recipes/{id}", (int id, Recipe rec) =>
-    _recipes.AddOrUpdate(id, (i) => rec, (i, _) => rec));
+app.MapPut("/recipes/{id}", (int id, Recipe rec) => {
+    var isUpdate = _recipes.ContainsKey(id);
+    _recipes[id] = rec;
+    return isUpdate ? Results.Ok(rec) : TypedResults.Created($"/recipes/{id}", rec);
+});
+
+app.MapDelete("/recipes/{id}", (int id) =>
+    _recipes.TryRemove(id, out var _) ? Results.NoContent() : Results.NotFound());
 
 app.Run();
 
