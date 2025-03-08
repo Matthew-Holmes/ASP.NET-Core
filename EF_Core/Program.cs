@@ -2,7 +2,12 @@ using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+app.UseSwagger();   
+app.UseSwaggerUI(); 
 
 #region demo data
 Ingredient _egg   = new Ingredient("egg",               "eggs");
