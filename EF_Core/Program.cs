@@ -1,9 +1,14 @@
 using System.Collections.Concurrent;
-using Microsoft.AspNetCore.Http.HttpResults;
+using EF_Core;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<AppDbContext>(
+    options => options.UseSqlite(connString));
 
 var app = builder.Build();
 app.UseSwagger();   
