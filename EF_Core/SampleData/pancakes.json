@@ -1,0 +1,25 @@
+{
+  "name": "pancakes",
+  "timeToCookHrs": 0,
+  "timeToCookMins": 30,
+  "method": "mix all the ingredients \n fry quickly in a hot pan \n serve immediately",
+  "isVegetarian": true,
+  "isVegan": false,
+  "ingredients": [
+    {
+      "name": "egg",
+      "quantity": 2,
+      "unit": "eggs"
+    },
+    {
+      "name": "milk",
+      "quantity": 500,
+      "unit": "ml"
+    },
+    {
+      "name": "flour",
+      "quantity": 500,
+      "unit": "grams"
+    }
+  ]
+}

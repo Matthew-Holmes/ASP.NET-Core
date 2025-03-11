@@ -1,0 +1,15 @@
+{
+  "name": "boiled egg",
+  "timeToCookHrs": 0,
+  "timeToCookMins": 10,
+  "method": "heat a pan of water \n boil the egg inside its shell",
+  "isVegetarian": true,
+  "isVegan": false,
+  "ingredients": [
+    {
+      "name": "egg",
+      "quantity": 1,
+      "unit": "eggs"
+    }
+  ]
+}
