@@ -1,4 +1,4 @@
-﻿using SQLitePCL;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace EF_Core
 {
@@ -15,6 +15,14 @@ namespace EF_Core
         bool   IsVegan,
         IEnumerable<CreateIngredientCommand> Ingredients
         );
+
+    public record RecipeSummaryViewModel
+    {
+        public int    Id { get; init; }
+        public String Name { get; init; }
+        public String TimeToCook { get; init; }
+    }
+
 
     public class RecipeService
     {
@@ -49,6 +57,19 @@ namespace EF_Core
             await _context.SaveChangesAsync();
 
             return recipe.RecipeId; // ef core populated this field when it saved the recipe
+        }
+
+        public async Task<ICollection<RecipeSummaryViewModel>> GetRecipes()
+        {
+            return await _context.Recipes
+                .Where( r => !r.IsDeleted)
+                .Select(r => new RecipeSummaryViewModel
+                {
+                    Id         = r.RecipeId,
+                    Name       = r.Name,
+                    TimeToCook = $"{r.TimeToCook.TotalMinutes}mins"
+                })
+                .ToListAsync();
         }
 
     }
