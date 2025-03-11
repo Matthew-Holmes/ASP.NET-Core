@@ -8,6 +8,8 @@
         public bool IsDeleted { get; set; }
         public required string Method { get; set; }
         public required ICollection<Ingredient> Ingredients { get; set; }
+        public bool IsVegitarian { get; set; }
+        public bool IsVegan { get; set; }
     }
 
     public class Ingredient
