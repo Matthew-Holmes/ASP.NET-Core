@@ -23,6 +23,20 @@ namespace EF_Core
         public String TimeToCook { get; init; }
     }
 
+    public record RecipeDetailViewModel 
+    {
+        public record Item
+        {
+            public String Name     { get; init; }
+            public String Quantity { get; init; }
+        }
+        public int    Id     { get; init; }
+        public String Name   { get; init; }
+        public String Method { get; init; }
+        public IEnumerable<Item> Ingredients { get; init; }
+    }
+
+
 
     public class RecipeService
     {
@@ -70,6 +84,25 @@ namespace EF_Core
                     TimeToCook = $"{r.TimeToCook.TotalMinutes}mins"
                 })
                 .ToListAsync();
+        }
+
+        public async Task<RecipeDetailViewModel?> GetRecipeDetail(int id)
+        {
+            return await _context.Recipes
+                .Where(x => x.RecipeId == id)
+                .Select(x => new RecipeDetailViewModel
+                {
+                    Id          = x.RecipeId,
+                    Name        = x.Name,
+                    Method      = x.Method,
+                    Ingredients = x.Ingredients
+                        .Select(item => new RecipeDetailViewModel.Item
+                        {
+                            Name     = item.Name,
+                            Quantity = $"{item.Quantity} {item.Unit}"
+                        })
+                })
+                .SingleOrDefaultAsync();
         }
 
     }
