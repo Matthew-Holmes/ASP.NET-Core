@@ -16,10 +16,22 @@ namespace EF_Core
         IEnumerable<CreateIngredientCommand> Ingredients
         );
 
+    public record UpdateRecipeCommand
+    {
+        public int    Id             { get; init; }
+        public String Name           { get; init; }
+        public String Method         { get; init; }
+        public int    TimeToCookHrs  { get; init; }
+        public int    TimeToCookMins { get; init; }
+        public bool   IsVegetarian   { get; init; }
+        public bool   IsVegan        { get; init; }
+    }
+
+
     public record RecipeSummaryViewModel
     {
-        public int    Id { get; init; }
-        public String Name { get; init; }
+        public int    Id         { get; init; }
+        public String Name       { get; init; }
         public String TimeToCook { get; init; }
     }
 
@@ -104,6 +116,28 @@ namespace EF_Core
                 })
                 .SingleOrDefaultAsync();
         }
+
+        public async Task UpdateRecipe(UpdateRecipeCommand cmd)
+        {
+            var recipe = await _context.Recipes.FindAsync(cmd.Id); // simplifies reading an entity by Id
+
+            if (recipe is null)
+            {
+                throw new Exception("unable to find the recipe");
+            }
+            UpdateRecipe(recipe, cmd);
+            await _context.SaveChangesAsync();
+        }
+
+        static void UpdateRecipe(Recipe recipe, UpdateRecipeCommand cmd) 
+        {
+            recipe.Name         = cmd.Name;
+            recipe.TimeToCook   = new TimeSpan(cmd.TimeToCookHrs, cmd.TimeToCookMins, 0);
+            recipe.Method       = cmd.Method;
+            recipe.IsVegitarian = cmd.IsVegetarian;
+            recipe.IsVegan      = cmd.IsVegan;
+        }
+
 
     }
 }

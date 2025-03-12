@@ -48,22 +48,6 @@ recipeApi.MapPost("/", async (RecipeService rs, CreateRecipeCommand cmd) =>
     .ProducesProblem(StatusCodes.Status400BadRequest);  
 
 
-//// will definitely add or overwrite (thus idempotent)
-//recipeApi.MapPut("/{id}", (int id, Recipe rec) => {
-//    var isUpdate = _recipes.ContainsKey(id);
-//    _recipes[id] = rec;
-//    return isUpdate ? Results.Ok(rec) : TypedResults.Created($"/recipe/{id}", rec);
-//})
-//    .WithTags("recipe")
-//    .Produces<Recipe>(StatusCodes.Status200OK)
-//    .Produces<Recipe>(StatusCodes.Status201Created);
-
-//recipeApi.MapDelete("/{id}", (int id) =>
-//    _recipes.TryRemove(id, out var _) ? Results.NoContent() : Results.NotFound())
-//    .WithTags("recipe")
-//    .Produces(StatusCodes.Status204NoContent)
-//    .ProducesProblem(StatusCodes.Status404NotFound);
-
 app.Run();
 
 
