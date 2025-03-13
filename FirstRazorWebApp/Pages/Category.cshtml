@@ -1,4 +1,18 @@
 ﻿@page
 @model FirstRazorWebApp.Pages.CategoryModel
-@{
+
+<h2>To-Do Items in Category</h2>
+
+@if (Model.Items != null && Model.Items.Any())
+{
+    <ul>
+        @foreach (var item in Model.Items)
+        {
+            <li>@item.Name - Quantity: @item.quantity</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No items found for this category.</p>
 }

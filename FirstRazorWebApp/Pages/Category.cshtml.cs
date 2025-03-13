@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http.Features;
+a HTMLusing Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -24,4 +24,7 @@ namespace FirstRazorWebApp.Pages
         public List<ToDoListModel> Items { get; set; }
 
     }
+
+    public record ToDoListModel(String Name, int quantity);
+
 }
