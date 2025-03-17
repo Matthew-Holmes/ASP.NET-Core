@@ -7,6 +7,8 @@ public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
 
+    public String CurrencyUrl { get; set; }
+
     public IndexModel(ILogger<IndexModel> logger)
     {
         _logger = logger;
@@ -15,5 +17,6 @@ public class IndexModel : PageModel
     public void OnGet()
     {
         var url = Url.Page("Currency/View", new { Code = "USD" });
+        CurrencyUrl = $"{url}";
     }
 }
