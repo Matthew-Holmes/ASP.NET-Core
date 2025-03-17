@@ -1,0 +1,25 @@
+﻿@page "{code}"
+@model RazorPagesURLRouting.Pages.Currency.ViewModel
+@{
+}
+
+
+<html>
+<head>
+    <title>Currency Exchange</title>
+</head>
+<body>
+    <h1>Currency Exchange Rate</h1>
+
+    <form method="get">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="Code" value="@Model.Code" />
+        <button type="submit">Get Rate</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.Code))
+    {
+        <p>Exchange rate for <strong>@Model.Code</strong>: @Model.Rate</p>
+    }
+</body>
+</html>
