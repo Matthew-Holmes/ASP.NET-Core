@@ -21,5 +21,13 @@
     {
         <p>Exchange rate for <strong>@Model.Code</strong>: @Model.Rate</p>
     }
+
+    <h2>Generated URLs</h2>
+    <ul>
+        <li>URL1 (Relative Path): <a href="@Model.URL1">@Model.URL1</a></li>
+        <li>URL2 (Link Generator Path): <a href="@Model.URL2">@Model.URL2</a></li>
+        <li>URL3 (Context-Aware Path): <a href="@Model.URL3">@Model.URL3</a></li>
+        <li>URL4 (Absolute URI): <a href="@Model.URL4">@Model.URL4</a></li>
+    </ul>
 </body>
 </html>
