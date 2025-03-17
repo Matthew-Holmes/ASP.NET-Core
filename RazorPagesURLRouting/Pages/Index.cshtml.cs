@@ -16,7 +16,7 @@ public class IndexModel : PageModel
 
     public void OnGet()
     {
-        var url = Url.Page("Currency/View", new { Code = "USD" });
-        CurrencyUrl = $"{url}";
+        String? url = Url.Page("Currency/View", new { Code = "USD" });
+        CurrencyUrl = url ?? "";
     }
 }
