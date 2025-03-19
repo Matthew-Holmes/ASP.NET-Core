@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstRazorWebApp", "FirstRa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesURLRouting", "RazorPagesURLRouting\RazorPagesURLRouting.csproj", "{ACEE67ED-1C10-45D2-A66F-35D9DF5BE031}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesHandlers", "RazorPagesHandlers\RazorPagesHandlers.csproj", "{2F80FC77-708B-4095-B35E-7D81817E4030}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{ACEE67ED-1C10-45D2-A66F-35D9DF5BE031}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACEE67ED-1C10-45D2-A66F-35D9DF5BE031}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACEE67ED-1C10-45D2-A66F-35D9DF5BE031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F80FC77-708B-4095-B35E-7D81817E4030}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F80FC77-708B-4095-B35E-7D81817E4030}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F80FC77-708B-4095-B35E-7D81817E4030}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F80FC77-708B-4095-B35E-7D81817E4030}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
