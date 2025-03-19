@@ -1,4 +1,36 @@
 ﻿@page "{handler}"
 @model RazorPagesHandlers.Pages.SearchModel
 @{
+    ViewData["Title"] = "Search Page";
+}
+
+<h2>Search</h2>
+
+<form method="post">
+    <div>
+        <label for="searchTerms">Search Terms:</label>
+        <input asp-for="Input.SearchTerms" class="form-control" />
+    </div>
+
+    <div>
+        <label for="maxResults">Max Results:</label>
+        <input type="number" name="max" class="form-control" value="10" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Search</button>
+</form>
+
+@if (Model.Results != null && Model.Results.Any())
+{
+    <h3>Results</h3>
+    <ul>
+        @foreach (var product in Model.Results)
+        {
+            <li>@product.Name - @product.Price.ToString("C")</li>
+        }
+    </ul>
+}
+else if (Model.Results != null)
+{
+    <p>No results found.</p>
 }

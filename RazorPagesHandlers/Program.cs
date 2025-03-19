@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<SearchService>();
 
 var app = builder.Build();
 
@@ -23,3 +24,14 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
+
+
+public record Product(string Name, int Id, decimal Price);
+
+public class SearchService
+{
+    public List<Product> Search(List<String> searchTerms, int max)
+    {
+        return new List<Product> { new Product("Widget", 0, 0.50m) };
+    }
+}
