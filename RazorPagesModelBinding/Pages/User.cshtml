@@ -1,0 +1,35 @@
+﻿@page "{FirstName}/{LastName}/{Email}/{PhoneNumber}"
+@model RazorPagesModelBinding.Pages.UserModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>User Info</title>
+</head>
+<body>
+    <h1>User Information</h1>
+
+    <p>@Model.Splash</p>
+    <p>Email: @Model.Contact</p>
+
+    <form method="get">
+        <label for="FirstName">First Name:</label>
+        <input id="FirstName" name="FirstName" type="text" value="@Model.Input?.FirstName" required />
+
+        <label for="LastName">Last Name:</label>
+        <input id="LastName" name="LastName" type="text" value="@Model.Input?.LastName" required />
+
+        <label for="Email">Email:</label>
+        <input id="Email" name="Email" type="email" value="@Model.Input?.Email" required />
+
+        <label for="PhoneNumber">Phone:</label>
+        <input id="PhoneNumber" name="PhoneNumber" type="tel" value="@Model.Input?.PhoneNumber" />
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
