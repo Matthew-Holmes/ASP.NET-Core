@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorPagesModelBinding.Pages
 {
+    // to test visit:
+    // /User/John/Doe/john.doe@example.com/1234567890
     public class UserModel : PageModel
     {
 
