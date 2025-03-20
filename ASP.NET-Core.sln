@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesURLRouting", "Raz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesHandlers", "RazorPagesHandlers\RazorPagesHandlers.csproj", "{2F80FC77-708B-4095-B35E-7D81817E4030}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesModelBinding", "RazorPagesModelBinding\RazorPagesModelBinding.csproj", "{E518777E-C594-4861-BEC9-C5298D4B6015}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{2F80FC77-708B-4095-B35E-7D81817E4030}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F80FC77-708B-4095-B35E-7D81817E4030}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F80FC77-708B-4095-B35E-7D81817E4030}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E518777E-C594-4861-BEC9-C5298D4B6015}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E518777E-C594-4861-BEC9-C5298D4B6015}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E518777E-C594-4861-BEC9-C5298D4B6015}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E518777E-C594-4861-BEC9-C5298D4B6015}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

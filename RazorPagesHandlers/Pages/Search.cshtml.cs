@@ -27,6 +27,7 @@ namespace RazorPagesHandlers.Pages
             // doesn't require model binding, so just do the default and render the view
         }
 
+        // return IActionResult since that is implemented by Page() and RedirectToPage()
         public IActionResult OnPost(int max)
         {
             if (ModelState.IsValid)
